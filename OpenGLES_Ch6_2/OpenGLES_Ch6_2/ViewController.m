@@ -11,10 +11,8 @@
 #import "SceneAnimatedMesh.h"
 
 @interface ViewController ()
-@property (strong, nonatomic) GLKBaseEffect
-*baseEffect;
-@property (strong, nonatomic) SceneAnimatedMesh
-*animatedMesh;
+@property (strong, nonatomic) GLKBaseEffect *baseEffect;
+@property (strong, nonatomic) SceneAnimatedMesh *animatedMesh;
 @end
 
 @implementation ViewController

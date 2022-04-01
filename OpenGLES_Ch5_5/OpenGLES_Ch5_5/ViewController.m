@@ -65,8 +65,7 @@ static const SceneVertex vertices[] =
     {{ 1.0f,  0.67f, 0.0f}, {1.0f, 1.0f}},
 };
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.textureMatrixStack =
@@ -101,8 +100,7 @@ static const SceneVertex vertices[] =
                          usage:GL_STATIC_DRAW];
     
     // Setup texture0
-    CGImageRef imageRef0 =
-    [[UIImage imageNamed:@"leaves.png"] CGImage];
+    CGImageRef imageRef0 = [[UIImage imageNamed:@"leaves"] CGImage];
     GLKTextureInfo *textureInfo0 = [GLKTextureLoader
                                     textureWithCGImage:imageRef0
                                     options:[NSDictionary dictionaryWithObjectsAndKeys:

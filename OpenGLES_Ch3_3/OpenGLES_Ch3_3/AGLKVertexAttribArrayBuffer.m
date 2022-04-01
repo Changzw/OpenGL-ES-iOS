@@ -31,30 +31,30 @@ stride;
                      bytes:(const GLvoid *)dataPtr
                      usage:(GLenum)usage;
 {
-    NSParameterAssert(0 < aStride);
-    NSAssert((0 < count && NULL != dataPtr) ||
-             (0 == count && NULL == dataPtr),
-             @"data must not be NULL or count > 0");
+  NSParameterAssert(0 < aStride);
+  NSAssert((0 < count && NULL != dataPtr) ||
+           (0 == count && NULL == dataPtr),
+           @"data must not be NULL or count > 0");
+  
+  if(nil != (self = [super init]))
+  {
+    stride = aStride;
+    bufferSizeBytes = stride * count;
     
-    if(nil != (self = [super init]))
-    {
-        stride = aStride;
-        bufferSizeBytes = stride * count;
-        
-        glGenBuffers(1,                // STEP 1
-                     &name);
-        glBindBuffer(GL_ARRAY_BUFFER,  // STEP 2
-                     self.name);
-        glBufferData(                  // STEP 3
-                     GL_ARRAY_BUFFER,  // Initialize buffer contents
-                     bufferSizeBytes,  // Number of bytes to copy
-                     dataPtr,          // Address of bytes to copy
-                     usage);           // Hint: cache in GPU memory
-        
-        NSAssert(0 != name, @"Failed to generate name");
-    }
+    glGenBuffers(1,                // STEP 1
+                 &name);
+    glBindBuffer(GL_ARRAY_BUFFER,  // STEP 2
+                 self.name);
+    glBufferData(                  // STEP 3
+                 GL_ARRAY_BUFFER,  // Initialize buffer contents
+                 bufferSizeBytes,  // Number of bytes to copy
+                 dataPtr,          // Address of bytes to copy
+                 usage);           // Hint: cache in GPU memory
     
-    return self;
+    NSAssert(0 != name, @"Failed to generate name");
+  }
+  
+  return self;
 }
 /*
  该方法可以定期地使用变化了的定点位置重新初始化定点数组缓存的内容以产生一个在突出纹理失真的简单动画，这个失真是自然发生的几何纹理映射的一部分。
@@ -63,21 +63,21 @@ stride;
               numberOfVertices:(GLsizei)count
                          bytes:(const GLvoid *)dataPtr;
 {
-    NSParameterAssert(0 < aStride);
-    NSParameterAssert(0 < count);
-    NSParameterAssert(NULL != dataPtr);
-    NSAssert(0 != name, @"Invalid name");
-    
-    self.stride = aStride;
-    self.bufferSizeBytes = aStride * count;
-    
-    glBindBuffer(GL_ARRAY_BUFFER,  // STEP 2
-                 self.name);
-    glBufferData(                  // STEP 3
-                 GL_ARRAY_BUFFER,  // Initialize buffer contents
-                 bufferSizeBytes,  // Number of bytes to copy
-                 dataPtr,          // Address of bytes to copy
-                 GL_DYNAMIC_DRAW);
+  NSParameterAssert(0 < aStride);
+  NSParameterAssert(0 < count);
+  NSParameterAssert(NULL != dataPtr);
+  NSAssert(0 != name, @"Invalid name");
+  
+  self.stride = aStride;
+  self.bufferSizeBytes = aStride * count;
+  
+  glBindBuffer(GL_ARRAY_BUFFER,  // STEP 2
+               self.name);
+  glBufferData(                  // STEP 3
+               GL_ARRAY_BUFFER,  // Initialize buffer contents
+               bufferSizeBytes,  // Number of bytes to copy
+               dataPtr,          // Address of bytes to copy
+               GL_DYNAMIC_DRAW);
 }
 
 
@@ -91,35 +91,35 @@ stride;
                    attribOffset:(GLsizeiptr)offset
                    shouldEnable:(BOOL)shouldEnable
 {
-    NSParameterAssert((0 < count) && (count < 4));
-    NSParameterAssert(offset < self.stride);
-    NSAssert(0 != name, @"Invalid name");
-    
-    glBindBuffer(GL_ARRAY_BUFFER,     // STEP 2
-                 self.name);
-    
-    if(shouldEnable)
-    {
-        glEnableVertexAttribArray(     // Step 4
-                                  index);
-    }
-    
-    glVertexAttribPointer(            // Step 5
-                          index,               // Identifies the attribute to use
-                          count,               // number of coordinates for attribute
-                          GL_FLOAT,            // data is floating point
-                          GL_FALSE,            // no fixed point scaling
-                          self.stride,         // total num bytes stored per vertex
-                          NULL + offset);      // offset from start of each vertex to
-    // first coord for attribute
+  NSParameterAssert((0 < count) && (count < 4));
+  NSParameterAssert(offset < self.stride);
+  NSAssert(0 != name, @"Invalid name");
+  
+  glBindBuffer(GL_ARRAY_BUFFER,     // STEP 2
+               self.name);
+  
+  if(shouldEnable)
+  {
+    glEnableVertexAttribArray(     // Step 4
+                              index);
+  }
+  
+  glVertexAttribPointer(            // Step 5
+                        index,               // Identifies the attribute to use
+                        count,               // number of coordinates for attribute
+                        GL_FLOAT,            // data is floating point
+                        GL_FALSE,            // no fixed point scaling
+                        self.stride,         // total num bytes stored per vertex
+                        NULL + offset);      // offset from start of each vertex to
+  // first coord for attribute
 #ifdef DEBUG
-    {  // Report any errors
-        GLenum error = glGetError();
-        if(GL_NO_ERROR != error)
-        {
-            NSLog(@"GL Error: 0x%x", error);
-        }
+  {  // Report any errors
+    GLenum error = glGetError();
+    if(GL_NO_ERROR != error)
+    {
+      NSLog(@"GL Error: 0x%x", error);
     }
+  }
 #endif
 }
 
@@ -132,11 +132,11 @@ stride;
          startVertexIndex:(GLint)first
          numberOfVertices:(GLsizei)count
 {
-    NSAssert(self.bufferSizeBytes >=
-             ((first + count) * self.stride),
-             @"Attempt to draw more vertex data than available.");
-    
-    glDrawArrays(mode, first, count); // Step 6
+  NSAssert(self.bufferSizeBytes >=
+           ((first + count) * self.stride),
+           @"Attempt to draw more vertex data than available.");
+  
+  glDrawArrays(mode, first, count); // Step 6
 }
 
 
@@ -149,7 +149,7 @@ stride;
                   startVertexIndex:(GLint)first
                   numberOfVertices:(GLsizei)count;
 {
-    glDrawArrays(mode, first, count); // Step 6
+  glDrawArrays(mode, first, count); // Step 6
 }
 
 
@@ -158,12 +158,12 @@ stride;
 // Context when the receiver is deallocated.
 - (void)dealloc
 {
-    // Delete buffer from current context
-    if (0 != name)
-    {
-        glDeleteBuffers (1, &name); // Step 7
-        name = 0;
-    }
+  // Delete buffer from current context
+  if (0 != name)
+  {
+    glDeleteBuffers (1, &name); // Step 7
+    name = 0;
+  }
 }
 
 @end

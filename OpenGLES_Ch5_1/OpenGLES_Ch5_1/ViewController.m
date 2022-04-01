@@ -41,49 +41,49 @@
  与之前把所有的顶点元素交错保存在一个缓存中的例子不同，在本例子中使用了多个顶点属性数组缓存。当所有的顶点属性靠在一起驻留在内存中时，大部分GPU可以最佳化执行。GPU可能会在一个内存操作中读取所需的所有值。然而，用来生成在sphere.h文件中声明的数据的脚本会保存定点位置，法向量和纹理坐标到不同的数组中，因此，如在前面的”-viewDidLoad“实现中以粗体标注的代码显示的一样，保存数据到不同缓存是最容易的，当一些顶点元素频繁变换而剩下的保存不变时，使用不同的缓存有时候有可能会产生一个性能优势。例如，如果纹理坐标从来不改变但是顶点位置频繁改变，那么把顶点位置保存到一个会用GL_DYNAMIC_DRAW提示的缓存中，把纹理坐标保存在另一个使用GL_STATIC_DRAW提示的缓存中，这样应该是最佳化的。
  */
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    GLKView *view = (GLKView *)self.view;
-    NSAssert([view isKindOfClass:[GLKView class]], @"View controller's view is not a GLKView");
-    view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
-    view.context = [[AGLKContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    [AGLKContext setCurrentContext:view.context];
-    self.baseEffect = [[GLKBaseEffect alloc] init];
-    self.baseEffect = [[GLKBaseEffect alloc] init];
-    self.baseEffect.light0.enabled = GL_TRUE;
-    self.baseEffect.light0.diffuseColor = GLKVector4Make(0.7f, 0.7f, 0.7f, 1.0f);
-    self.baseEffect.light0.ambientColor = GLKVector4Make(0.2f, 0.2f, 0.2f, 1.0f);
-    self.baseEffect.light0.position = GLKVector4Make(1.0f, 0.0f, -0.8f, 0.0f);
-    CGImageRef imageRef = [[UIImage imageNamed:@"Earth512x256.jpg"] CGImage];
-    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:imageRef options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],GLKTextureLoaderOriginBottomLeft, nil] error:NULL];
-    self.baseEffect.texture2d0.name = textureInfo.name;
-    self.baseEffect.texture2d0.target = textureInfo.target;
-    /*
-     使用多个顶点属性数组缓存提供的属性所做的绘制与以前的例子会有一点不同。为AGLKContext的"-clear:"方法指定GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT来自同一时间清除深度缓存和颜色渲染缓存。AGLKContext的”-clear：“方法会调用glClear()函数。在-viewDidLoad中创建每个AGLKVertexAttribArrayBuffer实例是为绘制准备的。准备好调用glBindBuffer(),glEnableVretexAttribArray()和glVetexAttribPointer()函数。最后，一个被添加到本例的AGLKVertexAttribArrayBuffer类的列方法+ (void)drawPreparedArraysWithMode:(GLenum)mode startVertexIndex:(GLint)first numberOfVertices:(GLsizei)count会调用glDrawArrays()函数，这个函数会绘制顶点，使用从每个开启属性的缓存指针搜集来的数据。
-     */
-    ((AGLKContext *)view.context).clearColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 1.0f);
-    self.vertexPositionBuffer= [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(3 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereVerts) / (3 * sizeof(GLfloat)) bytes:sphereVerts usage:GL_STATIC_DRAW];
-    self.vertexNormalBuffer = [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(3 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereNormals) / (3 * sizeof(GLfloat)) bytes:sphereNormals usage:GL_STATIC_DRAW];
-    self.vertexTextureCoordBuffer = [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(2 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereTexCoords) / (2 * sizeof(GLfloat)) bytes:sphereTexCoords usage:GL_STATIC_DRAW];
-    //如下代码开启了片元深度测试，如果好奇看看在不使用深度缓存的情况下在渲染过程中会发生什么，可以试着把如下的代码注释掉。
-    [(AGLKContext *)view.context enable:GL_DEPTH_TEST];
+  [super viewDidLoad];
+  GLKView *view = (GLKView *)self.view;
+  NSAssert([view isKindOfClass:[GLKView class]], @"View controller's view is not a GLKView");
+  view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
+  view.context = [[AGLKContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+  [AGLKContext setCurrentContext:view.context];
+  self.baseEffect = [[GLKBaseEffect alloc] init];
+  self.baseEffect = [[GLKBaseEffect alloc] init];
+  self.baseEffect.light0.enabled = GL_TRUE;
+  self.baseEffect.light0.diffuseColor = GLKVector4Make(0.7f, 0.7f, 0.7f, 1.0f);
+  self.baseEffect.light0.ambientColor = GLKVector4Make(0.2f, 0.2f, 0.2f, 1.0f);
+  self.baseEffect.light0.position = GLKVector4Make(1.0f, 0.0f, -0.8f, 0.0f);
+  CGImageRef imageRef = [[UIImage imageNamed:@"Earth512x256.jpg"] CGImage];
+  GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:imageRef options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],GLKTextureLoaderOriginBottomLeft, nil] error:NULL];
+  self.baseEffect.texture2d0.name = textureInfo.name;
+  self.baseEffect.texture2d0.target = textureInfo.target;
+  /*
+   使用多个顶点属性数组缓存提供的属性所做的绘制与以前的例子会有一点不同。为AGLKContext的"-clear:"方法指定GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT来自同一时间清除深度缓存和颜色渲染缓存。AGLKContext的”-clear：“方法会调用glClear()函数。在-viewDidLoad中创建每个AGLKVertexAttribArrayBuffer实例是为绘制准备的。准备好调用glBindBuffer(),glEnableVretexAttribArray()和glVetexAttribPointer()函数。最后，一个被添加到本例的AGLKVertexAttribArrayBuffer类的列方法+ (void)drawPreparedArraysWithMode:(GLenum)mode startVertexIndex:(GLint)first numberOfVertices:(GLsizei)count会调用glDrawArrays()函数，这个函数会绘制顶点，使用从每个开启属性的缓存指针搜集来的数据。
+   */
+  ((AGLKContext *)view.context).clearColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 1.0f);
+  self.vertexPositionBuffer= [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(3 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereVerts) / (3 * sizeof(GLfloat)) bytes:sphereVerts usage:GL_STATIC_DRAW];
+  self.vertexNormalBuffer = [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(3 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereNormals) / (3 * sizeof(GLfloat)) bytes:sphereNormals usage:GL_STATIC_DRAW];
+  self.vertexTextureCoordBuffer = [[AGLKVertexAttribArrayBuffer alloc] initWithAttribStride:(2 * sizeof(GLfloat)) numberOfVertices:sizeof(sphereTexCoords) / (2 * sizeof(GLfloat)) bytes:sphereTexCoords usage:GL_STATIC_DRAW];
+  //如下代码开启了片元深度测试，如果好奇看看在不使用深度缓存的情况下在渲染过程中会发生什么，可以试着把如下的代码注释掉。
+  [(AGLKContext *)view.context enable:GL_DEPTH_TEST];
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect{
-    [self.baseEffect prepareToDraw];
-    [(AGLKContext *)view.context clear:GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT];
-    [self.vertexPositionBuffer prepareToDrawWithAttrib:GLKVertexAttribPosition numberOfCoordinates:3 attribOffset:0 shouldEnable:YES];
-    [self.vertexNormalBuffer prepareToDrawWithAttrib:GLKVertexAttribNormal numberOfCoordinates:3 attribOffset:0 shouldEnable:YES];
-    [self.vertexTextureCoordBuffer prepareToDrawWithAttrib:GLKVertexAttribTexCoord0 numberOfCoordinates:2 attribOffset:0 shouldEnable:YES];
-    [AGLKVertexAttribArrayBuffer drawPreparedArraysWithMode:GL_TRIANGLES startVertexIndex:0 numberOfVertices:sphereNumVerts];
+  [self.baseEffect prepareToDraw];
+  [(AGLKContext *)view.context clear:GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT];
+  [self.vertexPositionBuffer prepareToDrawWithAttrib:GLKVertexAttribPosition numberOfCoordinates:3 attribOffset:0 shouldEnable:YES];
+  [self.vertexNormalBuffer prepareToDrawWithAttrib:GLKVertexAttribNormal numberOfCoordinates:3 attribOffset:0 shouldEnable:YES];
+  [self.vertexTextureCoordBuffer prepareToDrawWithAttrib:GLKVertexAttribTexCoord0 numberOfCoordinates:2 attribOffset:0 shouldEnable:YES];
+  [AGLKVertexAttribArrayBuffer drawPreparedArraysWithMode:GL_TRIANGLES startVertexIndex:0 numberOfVertices:sphereNumVerts];
 }
 - (void)viewDidUnload{
-    [super viewDidUnload];
-    GLKView *view = (GLKView *)self.view;
-    [AGLKContext setCurrentContext:view.context];
-    self.vertexPositionBuffer = nil;
-    self.vertexNormalBuffer = nil;
-    self.vertexTextureCoordBuffer = nil;
-    ((GLKView *)self.view).context = nil;
-    [EAGLContext setCurrentContext:nil];
+  [super viewDidUnload];
+  GLKView *view = (GLKView *)self.view;
+  [AGLKContext setCurrentContext:view.context];
+  self.vertexPositionBuffer = nil;
+  self.vertexNormalBuffer = nil;
+  self.vertexTextureCoordBuffer = nil;
+  ((GLKView *)self.view).context = nil;
+  [EAGLContext setCurrentContext:nil];
 }
 @end

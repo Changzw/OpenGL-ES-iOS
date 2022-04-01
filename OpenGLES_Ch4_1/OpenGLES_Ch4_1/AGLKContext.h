@@ -8,9 +8,8 @@
 
 #import <GLKit/GLKit.h>
 
-@interface AGLKContext : EAGLContext
-{
-    GLKVector4 clearColor;
+@interface AGLKContext : EAGLContext {
+  GLKVector4 clearColor;
 }
 
 @property (nonatomic, assign, readwrite)

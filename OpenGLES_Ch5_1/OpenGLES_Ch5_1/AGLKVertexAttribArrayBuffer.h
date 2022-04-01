@@ -11,18 +11,17 @@
 @class AGLKElementIndexArrayBuffer;
 
 typedef enum {
-    AGLKVertexAttribPosition = GLKVertexAttribPosition,
-    AGLKVertexAttribNormal = GLKVertexAttribNormal,
-    AGLKVertexAttribColor = GLKVertexAttribColor,
-    AGLKVertexAttribTexCoord0 = GLKVertexAttribTexCoord0,
-    AGLKVertexAttribTexCoord1 = GLKVertexAttribTexCoord1,
+  AGLKVertexAttribPosition = GLKVertexAttribPosition,
+  AGLKVertexAttribNormal = GLKVertexAttribNormal,
+  AGLKVertexAttribColor = GLKVertexAttribColor,
+  AGLKVertexAttribTexCoord0 = GLKVertexAttribTexCoord0,
+  AGLKVertexAttribTexCoord1 = GLKVertexAttribTexCoord1,
 }AGLKVertexAttrib;
 
-@interface AGLKVertexAttribArrayBuffer : NSObject
-{
-    GLsizeiptr stride;
-    GLsizeiptr bufferSizeBytes;
-    GLuint name;
+@interface AGLKVertexAttribArrayBuffer : NSObject {
+  GLsizeiptr stride;
+  GLsizeiptr bufferSizeBytes;
+  GLuint name;
 }
 
 @property (nonatomic, readonly) GLuint name;
